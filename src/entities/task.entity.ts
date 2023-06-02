@@ -8,7 +8,7 @@ export class TaskEntity extends SharedEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
   @Column({ name: 'user_id', length: 36 })
