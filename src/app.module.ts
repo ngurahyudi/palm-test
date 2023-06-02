@@ -16,6 +16,7 @@ import { WorkLogModule } from './models/work-log/work-log.module';
       password: 'admin',
       database: 'timetracking',
       autoLoadEntities: true,
+      dropSchema: true,
       synchronize: true,
       logging: true,
     }),
