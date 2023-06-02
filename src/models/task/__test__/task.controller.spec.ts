@@ -1,9 +1,8 @@
-import { GetTaskDto } from '../dto/get-task.dto';
-import { getTaskStub } from './stub/get-task.stub';
 import { TaskController } from '../task.controller';
 import { TaskService } from '../task.service';
 import { taskStub } from './stub/task.stub';
 import { Test, TestingModule } from '@nestjs/testing';
+import { TaskEntity } from '../../../entities/task.entity';
 
 describe('TaskController', () => {
   let taskController: TaskController;
@@ -32,6 +31,11 @@ describe('TaskController', () => {
     expect(taskService).toBeDefined();
   });
 
+  const response = {
+    id: 'some-id',
+    ...taskStub(),
+  } as unknown as TaskEntity;
+
   describe('create new task', () => {
     it('create method should be defined', () => {
       expect(taskController.create).toBeDefined();
@@ -40,7 +44,7 @@ describe('TaskController', () => {
     let result = {};
 
     beforeEach(async () => {
-      jest.spyOn(taskService, 'create').mockResolvedValueOnce(getTaskStub());
+      jest.spyOn(taskService, 'create').mockResolvedValueOnce(response);
       result = await taskController.create(taskStub());
     });
 
@@ -50,7 +54,7 @@ describe('TaskController', () => {
     });
 
     it('should return created task data', async () => {
-      expect(result).toEqual(getTaskStub());
+      expect(result).toEqual(response);
     });
   });
 
@@ -59,10 +63,10 @@ describe('TaskController', () => {
       expect(taskController.findAll).toBeDefined();
     });
 
-    let result: GetTaskDto[] = [];
+    let result: TaskEntity[] = [];
 
     beforeEach(async () => {
-      jest.spyOn(taskService, 'findAll').mockResolvedValueOnce([getTaskStub()]);
+      jest.spyOn(taskService, 'findAll').mockResolvedValueOnce([response]);
       result = await taskController.findAll();
     });
 
@@ -72,7 +76,7 @@ describe('TaskController', () => {
     });
 
     it('should return list of task data', async () => {
-      expect(result).toEqual([getTaskStub()]);
+      expect(result).toEqual([response]);
     });
   });
 });

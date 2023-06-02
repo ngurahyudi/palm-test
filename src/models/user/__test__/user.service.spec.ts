@@ -1,6 +1,4 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { GetUserDto } from '../dto/get-user.dto';
-import { getUserStub } from './stub/get-user.stub';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -38,6 +36,11 @@ describe('UserService', () => {
     expect(userRepository).toBeDefined();
   });
 
+  const response = {
+    id: 'some-id',
+    ...userStub(),
+  } as unknown as UserEntity;
+
   describe('create new user', () => {
     it('create method should be defined', () => {
       expect(userService.create).toBeDefined();
@@ -46,9 +49,7 @@ describe('UserService', () => {
     let result = {};
 
     beforeEach(async () => {
-      jest
-        .spyOn(userRepository, 'save')
-        .mockResolvedValueOnce(getUserStub() as unknown as UserEntity);
+      jest.spyOn(userRepository, 'save').mockResolvedValueOnce(response);
       result = await userService.create(userStub());
     });
 
@@ -60,7 +61,7 @@ describe('UserService', () => {
     });
 
     it('should return created user data', async () => {
-      expect(result).toEqual(getUserStub());
+      expect(result).toEqual(response);
     });
 
     it('should throw internal server error', async () => {
@@ -79,12 +80,10 @@ describe('UserService', () => {
       expect(userService.findAll).toBeDefined();
     });
 
-    let result: GetUserDto[] = [];
+    let result: UserEntity[] = [];
 
     beforeEach(async () => {
-      jest
-        .spyOn(userRepository, 'find')
-        .mockResolvedValueOnce([getUserStub()] as unknown as UserEntity[]);
+      jest.spyOn(userRepository, 'find').mockResolvedValueOnce([response]);
       result = await userService.findAll();
     });
 
@@ -94,7 +93,7 @@ describe('UserService', () => {
     });
 
     it('should return list of user data', async () => {
-      expect(result).toEqual([getUserStub()]);
+      expect(result).toEqual([response]);
     });
 
     it('should throw internal server error', async () => {

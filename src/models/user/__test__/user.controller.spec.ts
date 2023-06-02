@@ -1,9 +1,8 @@
-import { GetUserDto } from '../dto/get-user.dto';
-import { getUserStub } from './stub/get-user.stub';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
 import { userStub } from './stub/user.stub';
+import { UserEntity } from '../../../entities/user.entity';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -32,6 +31,11 @@ describe('UserController', () => {
     expect(userService).toBeDefined();
   });
 
+  const response = {
+    id: 'some-id',
+    ...userStub(),
+  } as unknown as UserEntity;
+
   describe('create new user', () => {
     it('create method should be defined', () => {
       expect(userController.create).toBeDefined();
@@ -40,7 +44,7 @@ describe('UserController', () => {
     let result = {};
 
     beforeEach(async () => {
-      jest.spyOn(userService, 'create').mockResolvedValueOnce(getUserStub());
+      jest.spyOn(userService, 'create').mockResolvedValueOnce(response);
       result = await userController.create(userStub());
     });
 
@@ -50,7 +54,7 @@ describe('UserController', () => {
     });
 
     it('should return created user data', async () => {
-      expect(result).toEqual(getUserStub());
+      expect(result).toEqual(response);
     });
   });
 
@@ -59,10 +63,10 @@ describe('UserController', () => {
       expect(userController.findAll).toBeDefined();
     });
 
-    let result: GetUserDto[] = [];
+    let result: UserEntity[] = [];
 
     beforeEach(async () => {
-      jest.spyOn(userService, 'findAll').mockResolvedValueOnce([getUserStub()]);
+      jest.spyOn(userService, 'findAll').mockResolvedValueOnce([response]);
       result = await userController.findAll();
     });
 
@@ -72,7 +76,7 @@ describe('UserController', () => {
     });
 
     it('should return list of user data', async () => {
-      expect(result).toEqual([getUserStub()]);
+      expect(result).toEqual([response]);
     });
   });
 });

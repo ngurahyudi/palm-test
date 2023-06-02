@@ -1,4 +1,3 @@
-import { GetUserDto } from './dto/get-user.dto';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,25 +11,17 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(data: UserDto): Promise<GetUserDto> {
+  async create(data: UserDto): Promise<UserEntity> {
     try {
-      const user = await this.userRepository.save(
-        this.userRepository.create(data),
-      );
-
-      return new GetUserDto(user.id, user.name, user.email);
+      return await this.userRepository.save(this.userRepository.create(data));
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async findAll(): Promise<GetUserDto[]> {
+  async findAll(): Promise<UserEntity[]> {
     try {
-      const users = await this.userRepository.find();
-
-      return users.map(
-        (user) => new GetUserDto(user.id, user.name, user.email),
-      );
+      return await this.userRepository.find();
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

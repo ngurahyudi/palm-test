@@ -1,6 +1,4 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { GetTaskDto } from '../dto/get-task.dto';
-import { getTaskStub } from './stub/get-task.stub';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { TaskEntity } from '../../../entities/task.entity';
@@ -38,6 +36,11 @@ describe('TaskService', () => {
     expect(taskRepository).toBeDefined();
   });
 
+  const response = {
+    id: 'some-id',
+    ...taskStub(),
+  } as unknown as TaskEntity;
+
   describe('create new task', () => {
     it('create method should be defined', () => {
       expect(taskService.create).toBeDefined();
@@ -46,9 +49,7 @@ describe('TaskService', () => {
     let result = {};
 
     beforeEach(async () => {
-      jest
-        .spyOn(taskRepository, 'save')
-        .mockResolvedValueOnce(getTaskStub() as unknown as TaskEntity);
+      jest.spyOn(taskRepository, 'save').mockResolvedValueOnce(response);
       result = await taskService.create(taskStub());
     });
 
@@ -60,7 +61,7 @@ describe('TaskService', () => {
     });
 
     it('should return created task data', async () => {
-      expect(result).toEqual(getTaskStub());
+      expect(result).toEqual(response);
     });
 
     it('should throw internal server error', async () => {
@@ -79,12 +80,10 @@ describe('TaskService', () => {
       expect(taskService.findAll).toBeDefined();
     });
 
-    let result: GetTaskDto[] = [];
+    let result: TaskEntity[] = [];
 
     beforeEach(async () => {
-      jest
-        .spyOn(taskRepository, 'find')
-        .mockResolvedValueOnce([getTaskStub()] as unknown as TaskEntity[]);
+      jest.spyOn(taskRepository, 'find').mockResolvedValueOnce([response]);
       result = await taskService.findAll();
     });
 
@@ -94,7 +93,7 @@ describe('TaskService', () => {
     });
 
     it('should return list of task data', async () => {
-      expect(result).toEqual([getTaskStub()]);
+      expect(result).toEqual([response]);
     });
 
     it('should throw internal server error', async () => {

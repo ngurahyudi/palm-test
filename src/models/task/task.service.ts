@@ -1,4 +1,3 @@
-import { GetTaskDto } from './dto/get-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { TaskDto } from './dto/task.dto';
@@ -16,13 +15,9 @@ export class TaskService {
     private readonly taskRepository: Repository<TaskEntity>,
   ) {}
 
-  async create(data: TaskDto): Promise<GetTaskDto> {
+  async create(data: TaskDto): Promise<TaskEntity> {
     try {
-      const task = await this.taskRepository.save(
-        this.taskRepository.create(data),
-      );
-
-      return new GetTaskDto(task.id, task.title, task.description, task.userId);
+      return await this.taskRepository.save(this.taskRepository.create(data));
     } catch (error) {
       if (error instanceof QueryFailedError)
         throw new BadRequestException('User does not exist');
@@ -31,14 +26,9 @@ export class TaskService {
     }
   }
 
-  async findAll(): Promise<GetTaskDto[]> {
+  async findAll(): Promise<TaskEntity[]> {
     try {
-      const tasks = await this.taskRepository.find();
-
-      return tasks.map(
-        (task) =>
-          new GetTaskDto(task.id, task.title, task.description, task.userId),
-      );
+      return await this.taskRepository.find();
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
