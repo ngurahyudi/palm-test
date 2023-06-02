@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { SharedEntity } from './shared.entity';
 import { TaskEntity } from './task.entity';
-import { WorkLogEntity } from './worklog.entity';
+import { WorkLogEntity } from './work-log.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity extends SharedEntity {

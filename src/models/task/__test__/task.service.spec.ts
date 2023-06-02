@@ -10,14 +10,14 @@ describe('TaskService', () => {
   let taskService: TaskService;
   let taskRepository: Repository<TaskEntity>;
 
-  const USER_REPOSITORY_TOKEN = getRepositoryToken(TaskEntity);
+  const TASK_REPOSITORY_TOKEN = getRepositoryToken(TaskEntity);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TaskService,
         {
-          provide: USER_REPOSITORY_TOKEN,
+          provide: TASK_REPOSITORY_TOKEN,
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
@@ -28,7 +28,7 @@ describe('TaskService', () => {
     }).compile();
 
     taskService = module.get<TaskService>(TaskService);
-    taskRepository = module.get<Repository<TaskEntity>>(USER_REPOSITORY_TOKEN);
+    taskRepository = module.get<Repository<TaskEntity>>(TASK_REPOSITORY_TOKEN);
   });
 
   it('should be defined', () => {
